@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" itemscope itemtype="http://schema.org/Article">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+    <script defer src="js/triplesec-3.0.0-min.js"></script>
+    <script>
+      var salt = '3jPk4TqGo4oiT7hmgHNA';
+    </script>
+  </head>
+  <body>
+    <form id="encrypt">
+      <textarea id="data">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut mattis sapien quis enim sagittis fringilla. Aenean metus libero, scelerisque id ligula nec, blandit placerat velit. Quisque ut rutrum nisl. In eget ipsum magna. Proin pharetra rhoncus ligula, ut viverra elit cursus vel. Nunc vulputate lorem id dui dapibus, sed ultrices metus iaculis. Aenean et nisi sem. Vivamus facilisis vel turpis sit amet dignissim. Proin gravida aliquam egestas. Duis tristique odio est, sollicitudin auctor justo dignissim dictum. Nulla fermentum ligula turpis, sit amet tincidunt lectus tempus non. Ut justo felis, bibendum quis odio id, mollis eleifend sapien. Nam sed lobortis ipsum.
+
+In molestie lacus quis pulvinar tristique. Donec ultrices turpis mi, ac sagittis purus malesuada ac. Ut tempor adipiscing elit, quis porttitor tellus rhoncus ut. Aliquam non nisl ac urna suscipit sodales id id orci. Donec ac gravida leo, quis tincidunt leo. Cras nulla velit, pellentesque sit amet ipsum sed, ornare pharetra turpis. Nunc id tortor sollicitudin, accumsan augue fringilla, imperdiet tortor. Etiam quis mauris eget urna facilisis laoreet sed ac mi. Suspendisse malesuada, leo quis eleifend adipiscing, nunc enim cursus sem, et cursus lorem eros et arcu.
+
+Donec in tempus elit. Vivamus viverra lacinia feugiat. Duis pharetra pulvinar nisl, quis lacinia mauris dictum eget. Phasellus eu luctus ante. Curabitur malesuada purus vitae dignissim convallis. Fusce vitae tristique nisi. Pellentesque at magna semper, congue nibh in, faucibus dolor. Maecenas mollis interdum tristique. Vestibulum nec varius erat. Suspendisse gravida urna non leo commodo molestie.
+
+Donec at porttitor sem. Etiam gravida mauris eu magna interdum, id tincidunt nisi tempor. Praesent convallis sit amet mauris nec tempor. Nam felis felis, adipiscing et odio quis, posuere ultrices diam. Proin lacinia a justo eu sodales. Donec ultricies justo at dapibus accumsan. Morbi et turpis accumsan, vehicula risus sed, tempus sem. Nunc sapien mi, elementum eu congue et, posuere ut erat. Sed egestas sapien eu ante pulvinar semper. Aenean condimentum pretium lacus, eu fringilla diam sagittis quis. Aenean gravida velit et nisl euismod, nec commodo erat ultrices. Sed rutrum vitae neque quis gravida.
+
+Cras egestas eget odio non vehicula. Sed volutpat ultricies leo, in scelerisque justo facilisis eu. Aenean mollis felis a diam volutpat, vitae sollicitudin nunc accumsan. Sed viverra quam sed tellus euismod mattis. Aliquam pellentesque tortor ut lacinia porttitor. Duis semper quis massa in euismod. Duis eget feugiat nisi. Morbi mollis lobortis est, id tristique lorem. Sed vitae felis posuere, euismod ligula at, consequat lorem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
+      </textarea>
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <button type="button" id="encrypt">Encrypt</button>
+      <button type="button" id="decrypt">Decrypt</button>
+    </form>
+    <script>
+      (function() {
+        function getKey() {
+          var username = $('#username').val();
+          var password = $('#password').val();
+          if (username && username.length && password && password.length) {
+            $('#encrypt').prop('disabled', false);
+            return new triplesec.Buffer(username + salt + password);
+          } else {
+            return false;
+          }
+        }
+
+        $('#encrypt').on({
+          click: function() {
+            if (_key = getKey()) {
+              triplesec.encrypt({
+                data: new triplesec.Buffer($('#data').val()),
+                key:  _key,
+                progress_hook: function (obj) { /* ... */ }
+              }, function(err, buff) {
+                if (! err) {
+                    $('#data').val(buff.toString('hex'));
+                } else {
+                  alert(err);
+                }
+              });
+              return false;
+            }
+          }
+        });
+
+        $('#decrypt').on({
+          click: function() {
+            if (_key = getKey()) {
+              triplesec.decrypt({
+                data: new triplesec.Buffer($('#data').val(), 'hex'),
+                key:  _key,
+                progress_hook: function (obj) { /* ... */ }
+              }, function(err, buff) {
+                if (! err) {
+                    $('#data').val(buff.toString());
+                } else {
+                  alert(err);
+                }
+              });
+              return false;
+            }
+          }
+        });
+      }).call(this);
+    </script>
+  </body>
+</html>
